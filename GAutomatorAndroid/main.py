@@ -27,17 +27,37 @@ usage:
 """
 __author__ = 'minhuaxu wukenaihesos@gmail.com'
 
+import re
 import os
 import traceback
+import json
 import time
 import getopt
 import sys
 import optparse
+import subprocess
 from config import Account,TestInfo
 import wpyscripts.manager as manager
+from wpyscripts.uiautomator import uiautomator_manager as ui
 from wpyscripts.common.wetest_exceptions import *
 
 local_package = os.environ.get("PKGNAME", TestInfo.PACKAGE)  # the package name you want to test
+
+def deal_window(package):
+    while 1:
+        cmd_ = subprocess.Popen("adb shell dumpsys window windows | findstr mCurrentFocus", stdout=subprocess.PIPE,
+                                shell=True).stdout.read().decode()
+        if package in cmd_:
+            break
+        device = ui.get_uiautomator()
+        #print(device.dump(), type(device.dump()))
+        reg = 'resource-id=\"(com.*?(?:button|))\".*?text=\"(?:允许|点击|下载|确定|通过)\"'
+        ss = re.compile(reg)
+        resourceid = ss.findall(device.dump())[0]
+        device(resourceId=resourceid).click()
+
+import requests, threading
+
 
 def _prepare_environ():
     if os.environ.get("PLATFORM_IP", None) is None:
@@ -97,7 +117,7 @@ def _prepare():
         lanuch_result = _cloud_prepare()
     else:
         lanuch_result = _native_prepare()
-
+    deal_window(local_package)
     if lanuch_result:
         #launch success. in general , a game may have a loading phase in which the sdk has not been launched. So we try to connect SDK in a loop.
         logger.debug("Launch package {0} SUCCESS,try to connect U3DAutomation SDK".format(os.environ["PKGNAME"]))
@@ -159,6 +179,7 @@ def main():
     parser.add_option("-g", "--othername", dest="OTHERNAME", help="upload account")
     parser.add_option("-f", "--otherpwd", dest="OTHERPWD", help="upload password")
     (options, args) = parser.parse_args()
+
     try:
         if options.QQNAME:
             os.environ["QQNAME"] = options.QQNAME
@@ -168,8 +189,8 @@ def main():
             os.environ["LOCAL_ENGINE_PORT"] = options.LOCAL_ENGINE_PORT
         if options.UIAUTOMATOR_PORT:
             os.environ["UIAUTOMATOR_PORT"] = options.UIAUTOMATOR_PORT
-        if options.ANDROID_SERIAL:
-            os.environ["ANDROID_SERIAL"] = options.ANDROID_SERIAL
+        #if options.ANDROID_SERIAL:
+        #    os.environ["ANDROID_SERIAL"] = options.ANDROID_SERIAL
         if options.OTHERNAME:
             os.environ["OTHERNAME"] = options.OTHERNAME
         if options.OTHERPWD:
@@ -178,14 +199,16 @@ def main():
             os.environ["WECHATNAME"] = options.WECHATNAME
         if options.WECHATPWD:
             os.environ["WECHATPWD"] = options.WECHATPWD
-
+        os.environ["ANDROID_SERIAL"] = TestInfo.DEVICES
+        os.environ["TESTCASE"] = json.dumps(TestInfo.TESTCASE)
         _prepare_environ()
     except getopt.error as msg:
-        print("for help use --help")
-        return 2
+       print("for help use --help")
+       return 2
 
     logger = manager.get_logger()
     try:
+
         _run()
     except:
         stack = traceback.format_exc()
@@ -195,4 +218,6 @@ def main():
 
 
 if __name__ == "__main__":
+
     sys.exit(main())
+

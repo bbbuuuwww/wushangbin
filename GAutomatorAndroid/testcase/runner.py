@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 __author__ = 'minhuaxu wukenaihesos@gmail.com'
 
 import os
+import json
 from wpyscripts.tools.basic_operator import *
 import wpyscripts.tools.traverse.travel as travel
 
@@ -45,10 +46,13 @@ def run():
     """
         begin of the test logic
     """
+    caselist = (json.loads(os.environ.get("TESTCASE")))
     try:
       #  random_search_test()
         from . import sample_case
-        sample_case.main()
+        from testcase import test_login
+        test_login.main(caselist)
+
         pass
     except Exception as e:
         traceback.print_exc()

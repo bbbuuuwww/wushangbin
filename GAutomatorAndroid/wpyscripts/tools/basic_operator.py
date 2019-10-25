@@ -247,6 +247,7 @@ def wait_for_scene(name, max_count=20, sleeptime=2):
     :param name:
     :return:
     """
+
     scene = None
     for i in range(max_count):
         try:
