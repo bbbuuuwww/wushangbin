@@ -7,3 +7,4 @@ __pycache__/
 *.log
 .idea
 GAutomatorAndroid/_wetest_testcase_result.txt
+/GAutomatorAndroid/*

@@ -41,6 +41,8 @@ import wpyscripts.manager as manager
 from wpyscripts.uiautomator import uiautomator_manager as ui
 from wpyscripts.common.wetest_exceptions import *
 
+
+
 local_package = os.environ.get("PKGNAME", TestInfo.PACKAGE)  # the package name you want to test
 
 def deal_window(package):
@@ -155,7 +157,7 @@ def main():
     """
         when testing several phones on your local PC, you could run the py by cmd
         you only need to set one type of account. "othername and other pwd" will be used preferentially if multiple types are provided.
-        --qqname:qqaccount 
+        --qqname:qqaccount
         --qqpwd:qq password
         --wechataccount:wechat account
         --wechatpwd:wechat password
@@ -217,7 +219,17 @@ def main():
         logger.debug("GAutomator End")
 
 
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     sys.exit(main())
+    # from wpyscripts.tools.mongodb_tools import myMongodb
+    # ss = myMongodb()
+    # print(ss.addPeople())
+
+
+
+
+
+
 

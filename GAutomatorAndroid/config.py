@@ -26,9 +26,14 @@ class TestInfo(object):
     r = readConfig()
     PACKAGE=r.getValues("package") # test package name
     DEVICES = r.getValues("devices")
-    if DEVICES == "127.0.0.1:7555":
-        file = excute_adb("connect 127.0.0.1:7555")
-        print(file.read())
+    if isinstance(DEVICES, str):
+        if "127" in DEVICES:
+            file = excute_adb("connect {}".format(DEVICES))
+    elif isinstance(DEVICES, list):
+        for device in DEVICES:
+            if "127" in device:
+                file = excute_adb("connect {}".format(device))
+
     TESTCASE = r.getValues("testcase")
 
 ### Engine Type

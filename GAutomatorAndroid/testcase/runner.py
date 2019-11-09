@@ -50,8 +50,9 @@ def run():
     try:
       #  random_search_test()
         from . import sample_case
-        from testcase import test_login
-        test_login.main(caselist)
+        #from testcase import test_login
+        from testcase import test_range
+        test_range.main(caselist)
 
         pass
     except Exception as e:
