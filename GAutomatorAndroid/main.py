@@ -53,7 +53,7 @@ def deal_window(package):
             break
         device = ui.get_uiautomator()
         #print(device.dump(), type(device.dump()))
-        reg = 'resource-id=\"(com.*?(?:button|))\".*?text=\"(?:允许|点击|下载|确定|通过)\"'
+        reg = 'resource-id=\"(com.*?(?:button|))\".*?text=\"(?:允许|点击|下载|确定|通过|下一步|是|同意|完成|暂不|稍后)\"'
         ss = re.compile(reg)
         resourceid = ss.findall(device.dump())[0]
         device(resourceId=resourceid).click()
